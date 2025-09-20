@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Insurance Practice Analysis Report</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header-meta {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            padding: 0 1rem;
+        }
+
+        .nav-pill {
+            background: #ecf0f1;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-pill:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-pill.active {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .executive-summary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .summary-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .data-table th {
+            background: #34495e;
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #fdfdfd;
+        }
+
+        .metric-highlight {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-right: 1rem;
+        }
+
+        .section-badge {
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .insight-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .insight-card h4:before {
+            content: "💡";
+            margin-right: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .recommendations {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .recommendations h3 {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .recommendation-item {
+            background: white;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .top-practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .practice-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+        }
+
+        .practice-card.revenue { border-top-color: #e74c3c; }
+        .practice-card.tenure { border-top-color: #3498db; }
+        .practice-card.ltv { border-top-color: #f39c12; }
+
+        .practice-rank {
+            display: inline-block;
+            background: #34495e;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 1rem;
+        }
+
+        .practice-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0.5rem 0;
+        }
+
+        .practice-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .practice-metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+        }
+
+        .company-type-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .company-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 5px solid;
+        }
+
+        .company-card.individual { border-top-color: #3498db; }
+        .company-card.firm { border-top-color: #e74c3c; }
+        .company-card.group { border-top-color: #f39c12; }
+        .company-card.partnership { border-top-color: #9b59b6; }
+
+        .company-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .company-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.75rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .company-stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .responsive-table {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-pills {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Business Insurance Practice Analysis</h1>
+            <div class="header-meta">
+                <strong>Complete Findings & Strategic Recommendations</strong><br>
+                Report Date: September 20, 2025 | Analysis Period: 20+ Years Historical Data<br>
+                Total Customers: 29,694 | Total Business Practices: 742
+            </div>
+        </div>
+
+        <nav class="nav-pills">
+            <button class="nav-pill active" onclick="showSection('executive')">📊 Executive Summary</button>
+            <button class="nav-pill" onclick="showSection('metrics')">📈 Business Metrics</button>
+            <button class="nav-pill" onclick="showSection('rankings')">🏆 Top Rankings</button>
+            <button class="nav-pill" onclick="showSection('targets')">🎯 Strategic Targets</button>
+            <button class="nav-pill" onclick="showSection('company-types')">🏢 Company Types</button>
+            <button class="nav-pill" onclick="showSection('profiles')">👤 Customer Profiles</button>
+            <button class="nav-pill" onclick="showSection('introducers')">🤝 Introducers</button>
+            <button class="nav-pill" onclick="showSection('recommendations')">💡 Recommendations</button>
+        </nav>
+
+        <div class="content">
+            <!-- Executive Summary Section -->
+            <div id="executive" class="section active">
+                <div class="executive-summary">
+                    <h2>Executive Summary</h2>
+                    <p>This comprehensive analysis of 29,694 customers across 742 business practices reveals distinct customer segments with varying lifetime values and tenure patterns. The data shows an inverse relationship between revenue per policy and customer tenure: medical practices generate high revenue (£140-160/policy) but shorter tenure (2 years), while professional and consulting practices offer lower revenue (£50-70/policy) but exceptional longevity (6 years).</p>
+                    
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <h3>5.88 years</h3>
+                            <p>True Customer Lifetime (Kaplan-Meier survival analysis)</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>£333.72</h3>
+                            <p>Forward-Looking LTV (4 years × £83.43)</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>£83.43</h3>
+                            <p>Recent 5-Year Average Revenue per Policy (+11.6%)</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>48.6%</h3>
+                            <p>Active Customers (Right-censored data)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert">
+                    <strong>⚠️ Critical Methodological Note:</strong> Nearly 50% of customers are still active (right-censored data). Using simple averages severely underestimates customer lifetime because it treats active customers as if they'll churn immediately. Kaplan-Meier survival analysis properly accounts for these ongoing relationships.
+                </div>
+
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h4>The Inverse Relationship</h4>
+                        <p><strong>High Revenue ↔ Short Tenure:</strong> Medical practices (£140-160/policy, 1.8-2.5 years)<br>
+                        <strong>Low Revenue ↔ Long Tenure:</strong> Consulting practices (£50-70/policy, 5-7 years)</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Company Performance</h4>
+                        <p><strong>Firms:</strong> 38% higher LTV than Individuals<br>
+                        <strong>Active Rate:</strong> Partnerships 75%, Firms 57%, Individuals 48%<br>
+                        <strong>Growth:</strong> Partnerships +300%, Firms +47%</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Market Opportunities</h4>
+                        <p><strong>Volume Leaders:</strong> Botox (1,205), Dermal Fillers (1,188)<br>
+                        <strong>LTV Champions:</strong> Hayfever Treatment (£409), Public Speaking (£391)<br>
+                        <strong>Emerging:</strong> Weight Loss Injectables, PDO Threads</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Metrics Section -->
+            <div id="metrics" class="section">
+                <div class="section-header">
+                    <h2>Overall Business Metrics</h2>
+                    <span class="section-badge">Foundation Analysis</span>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Customer Lifetime Analysis</div>
+                        <canvas id="lifetimeChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Revenue Trends Over Time</div>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Retention Probabilities</div>
+                        <canvas id="retentionChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Practice Category Distribution</div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="responsive-table">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Value</th>
+                                <th>Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Naive Calculation</td>
+                                <td style="color: #e74c3c;">2.77 years</td>
+                                <td>Misleading - DO NOT USE</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Survival Analysis (Kaplan-Meier) Average</strong></td>
+                                <td><span class="metric-highlight">5.88 years</span></td>
+                                <td>Strategic planning, market valuation</td>
+                            </tr>
+                            <tr>
+                                <td>Survival Analysis (Kaplan-Meier) Median</td>
+                                <td><strong>3.0 years</strong></td>
+                                <td>Kaplan-Meier median</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ultra-Conservative</strong></td>
+                                <td><span class="metric-highlight">4.0 years</span></td>
+                                <td>Financial planning, budgeting, ROI</td>
+                            </tr>
+                            <tr>
+                                <td>Active Customers</td>
+                                <td>14,438 (48.6%)</td>
+                                <td>Right-censored observations</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Top Rankings Section -->
+            <div id="rankings" class="section">
+                <div class="section-header">
+                    <h2>Top 20 Rankings by Key Metrics</h2>
+                    <span class="section-badge">Performance Leaders</span>
+                </div>
+
+                <div class="top-practices-grid">
+                    <div class="practice-card revenue">
+                        <h3>🔥 Top Revenue per Policy</h3>
+                        <div id="topRevenuePractices"></div>
+                    </div>
+                    
+                    <div class="practice-card tenure">
+                        <h3>⏰ Longest Customer Tenure</h3>
+                        <div id="topTenurePractices"></div>
+                    </div>
+                    
+                    <div class="practice-card ltv">
+                        <h3>💰 Highest Lifetime Value</h3>
+                        <div id="topLTVPractices"></div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Top 10 Practices by Revenue per Policy</div>
+                        <canvas id="topRevenueChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Top 10 Practices by Customer Tenure</div>
+                        <canvas id="topTenureChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategic Targets Section -->
+            <div id="targets" class="section">
+                <div class="section-header">
+                    <h2>Best Overall Recommended Practices to Target</h2>
+                    <span class="section-badge">Strategic Focus</span>
+                </div>
+
+                <div class="alert-success">
+                    <strong>🏆 TOP 15 STRATEGIC TARGETS</strong><br>
+                    Based on comprehensive scoring across multiple dimensions (LTV, revenue, tenure, volume, retention)
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Strategic Targets by Category</div>
+                        <canvas id="strategicTargetsChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">LTV vs Revenue Scatter Plot</div>
+                        <canvas id="ltvRevenueScatter"></canvas>
+                    </div>
+                </div>
+
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h4>🎯 Immediate Revenue Plays</h4>
+                        <p><strong>Botox:</strong> £150/policy, 1,205 customers<br>
+                        <strong>Dermal Fillers:</strong> £151/policy, 1,188 customers<br>
+                        <strong>PDO Threads:</strong> £161/policy, 155 customers<br>
+                        <strong>Fat Dissolving:</strong> £151/policy, 860 customers</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>🏰 Foundation Builders</h4>
+                        <p><strong>Public Speaking:</strong> 5.6 years, 666 customers<br>
+                        <strong>Train the Trainer:</strong> 5.8 years, 880 customers<br>
+                        <strong>Team Building:</strong> 6.0 years, 561 customers<br>
+                        <strong>Business Development:</strong> 6.0 years, 464 customers</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>💎 Premium Niches</h4>
+                        <p><strong>Hayfever Treatment:</strong> £409 LTV, 73.7% retention<br>
+                        <strong>Appreciative Inquiry:</strong> £395 LTV, 6.8 year tenure<br>
+                        <strong>Sclerotherapy:</strong> £379 LTV, premium pricing</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>📈 Growth Opportunities</h4>
+                        <p><strong>Weight Loss Injectables:</strong> 231 customers, £154/policy<br>
+                        <strong>Skin Boosters:</strong> 769 customers, £151/policy<br>
+                        <strong>Hyperhydrosis Treatment:</strong> 142 customers, £156/policy</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Types Section -->
+            <div id="company-types" class="section">
+                <div class="section-header">
+                    <h2>Company Type Performance Analysis</h2>
+                    <span class="section-badge">Segment Analysis</span>
+                </div>
+
+                <div class="alert">
+                    <strong>Key Finding:</strong> Firms deliver 38% higher lifetime value than Individuals despite comprising only 13.8% of the customer base.
+                </div>
+
+                <div class="company-type-cards">
+                    <div class="company-card individual">
+                        <h3>Individual</h3>
+                        <div class="company-stat">
+                            <span>Count:</span>
+                            <span class="stat-value">24,857 (84.2%)</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Active Rate:</span>
+                            <span class="stat-value">48.0%</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Revenue:</span>
+                            <span class="stat-value">£74.75</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Tenure:</span>
+                            <span class="stat-value">2.65 years</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>LTV:</span>
+                            <span class="stat-value">£197.95</span>
+                        </div>
+                    </div>
+
+                    <div class="company-card firm">
+                        <h3>Firm</h3>
+                        <div class="company-stat">
+                            <span>Count:</span>
+                            <span class="stat-value">4,062 (13.8%)</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Active Rate:</span>
+                            <span class="stat-value">57.1%</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Revenue:</span>
+                            <span class="stat-value">£77.84</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Tenure:</span>
+                            <span class="stat-value">3.50 years</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>LTV:</span>
+                            <span class="stat-value">£272.76</span>
+                        </div>
+                    </div>
+
+                    <div class="company-card group">
+                        <h3>Group</h3>
+                        <div class="company-stat">
+                            <span>Count:</span>
+                            <span class="stat-value">527 (1.8%)</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Active Rate:</span>
+                            <span class="stat-value">24.1%</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Revenue:</span>
+                            <span class="stat-value">£71.25</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Tenure:</span>
+                            <span class="stat-value">3.37 years</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>LTV:</span>
+                            <span class="stat-value">£240.26</span>
+                        </div>
+                    </div>
+
+                    <div class="company-card partnership">
+                        <h3>Partnership</h3>
+                        <div class="company-stat">
+                            <span>Count:</span>
+                            <span class="stat-value">80 (0.3%)</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Active Rate:</span>
+                            <span class="stat-value">75.0%</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Revenue:</span>
+                            <span class="stat-value">£76.24</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>Avg Tenure:</span>
+                            <span class="stat-value">1.75 years</span>
+                        </div>
+                        <div class="company-stat">
+                            <span>LTV:</span>
+                            <span class="stat-value">£133.42</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">LTV Comparison by Company Type</div>
+                        <canvas id="companyLTVChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Growth Trends by Company Type</div>
+                        <canvas id="companyGrowthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Profiles Section -->
+            <div id="profiles" class="section">
+                <div class="section-header">
+                    <h2>Ultimate High-Value Customer Profile Analysis</h2>
+                    <span class="section-badge">Elite Segments</span>
+                </div>
+
+                <div class="alert-success">
+                    <strong>🏆 The Elite Top 10:</strong> Firms dominate 80% of top profiles, with 50/50 split between Direct and Introducer channels. Ultimate profiles achieve 5.5 years average tenure and £549 average LTV - 2.5x the overall average.
+                </div>
+
+                <div class="responsive-table">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Company Type</th>
+                                <th>Business Practice</th>
+                                <th>Channel</th>
+                                <th>LTV</th>
+                                <th>Revenue</th>
+                                <th>Years</th>
+                                <th>Customers</th>
+                                <th>Active %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="practice-rank">1</span></td>
+                                <td><strong>Firm</strong></td>
+                                <td><strong>Hayfever Treatment</strong></td>
+                                <td><strong>Direct</strong></td>
+                                <td><span class="metric-highlight">£682</span></td>
+                                <td>£175</td>
+                                <td>3.9</td>
+                                <td>10</td>
+                                <td>90%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="practice-rank">2</span></td>
+                                <td>Firm</td>
+                                <td>Weight Loss Practitioner</td>
+                                <td>Direct</td>
+                                <td>£587</td>
+                                <td>£113</td>
+                                <td>5.2</td>
+                                <td>31</td>
+                                <td>58%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="practice-rank">3</span></td>
+                                <td>Firm</td>
+                                <td>First Aid Training</td>
+                                <td>Via Introducer</td>
+                                <td>£558</td>
+                                <td>£77</td>
+                                <td>7.3</td>
+                                <td>12</td>
+                                <td>58%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="practice-rank">4</span></td>
+                                <td>Firm</td>
+                                <td>First Aid at Work</td>
+                                <td>Via Introducer</td>
+                                <td>£550</td>
+                                <td>£85</td>
+                                <td>6.5</td>
+                                <td>10</td>
+                                <td>50%</td>
+                            </tr>
+                            <tr>
+                                <td><span class="practice-rank">5</span></td>
+                                <td>Individual</td>
+                                <td>Gift Wrapping</td>
+                                <td>Via Introducer</td>
+                                <td>£546</td>
+                                <td>£75</td>
+                                <td>7.3</td>
+                                <td>11</td>
+                                <td>73%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Elite Profile Distribution</div>
+                        <canvas id="eliteProfileChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">High-Value Opportunities</div>
+                        <canvas id="opportunitiesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Introducers Section -->
+            <div id="introducers" class="section">
+                <div class="section-header">
+                    <h2>Introducer Performance Analysis</h2>
+                    <span class="section-badge">Partnership Analysis</span>
+                </div>
+
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <h4>Channel Performance</h4>
+                        <p><strong>Introducer:</strong> 15,560 customers (52.4%)<br>
+                        <strong>Direct:</strong> 14,134 customers (47.6%)<br>
+                        <strong>LTV Difference:</strong> -3.6% (nearly equal)</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Trade-offs</h4>
+                        <p><strong>Direct:</strong> +15.9% higher revenue per policy<br>
+                        <strong>Introducer:</strong> +14.6% longer tenure<br>
+                        <strong>Result:</strong> Comparable lifetime values</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Top Performers</h4>
+                        <p><strong>APDO-UK:</strong> 393 customers, £246 LTV<br>
+                        <strong>CMA:</strong> 584 customers, £166 LTV<br>
+                        <strong>ICF:</strong> 338 customers, £268 LTV</p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>Growth Stars</h4>
+                        <p><strong>Health Coaches Academy:</strong> +300% growth<br>
+                        <strong>Lead Academy:</strong> Steady 5-year growth<br>
+                        <strong>WestMed Insurance:</strong> Strong launch</p>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <div class="chart-title">Introducer vs Direct Performance</div>
+                        <canvas id="introducerComparisonChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-title">Top Introducers by Customer Volume</div>
+                        <canvas id="topIntroducersChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="alert-danger">
+                    <strong>⚠️ Declining Partners:</strong> Several previously strong performers need attention: Hya Lips Academy (-100%), Hippocrates Health Institute (-92.8%), SWA Spiritual Workers (-74.1%)
+                </div>
+            </div>
+
+            <!-- Recommendations Section -->
+            <div id="recommendations" class="section">
+                <div class="section-header">
+                    <h2>Strategic Recommendations</h2>
+                    <span class="section-badge">Action Plan</span>
+                </div>
+
+                <div class="recommendations">
+                    <h3>🚀 Immediate Actions (0-3 months)</h3>
+                    
+                    <div class="recommendation-item">
+                        <h4>1. Launch "Premium Medical Practice Package"</h4>
+                        <p><strong>Target:</strong> Botox, Dermal Fillers, PDO Threads practitioners<br>
+                        <strong>Value Proposition:</strong> Comprehensive coverage for high-risk procedures<br>
+                        <strong>Price Point:</strong> £150+ per policy</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>2. Develop "Professional Services Partnership Program"</h4>
+                        <p><strong>Target:</strong> Public Speaking, Team Building, Business Consultancy<br>
+                        <strong>Value Proposition:</strong> Long-term partnership benefits, multi-year discounts<br>
+                        <strong>Focus:</strong> Retention and relationship building</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>3. Implement Firm-First Strategy</h4>
+                        <p><strong>Actions:</strong> Prioritize B2B marketing (38% higher LTV)<br>
+                        <strong>Create:</strong> Firm-specific onboarding<br>
+                        <strong>Develop:</strong> Corporate account management</p>
+                    </div>
+                </div>
+
+                <div class="recommendations">
+                    <h3>📈 Medium-term Initiatives (3-12 months)</h3>
+                    
+                    <div class="recommendation-item">
+                        <h4>1. Build Practice-Specific Retention Programs</h4>
+                        <p><strong>Medical:</strong> Loyalty rewards after year 1 (critical retention point)<br>
+                        <strong>Consulting:</strong> Annual review and optimization consultations<br>
+                        <strong>Wellness:</strong> Cross-practice bundling opportunities</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>2. Expand High-LTV Niche Markets</h4>
+                        <p><strong>Focus on:</strong> Hayfever Treatment specialists, Sclerotherapy providers, Appreciative Inquiry practitioners</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>3. Develop Predictive Churn Models</h4>
+                        <p><strong>Focus:</strong> Practices with <2 year average tenure<br>
+                        <strong>Implement:</strong> Early intervention programs<br>
+                        <strong>Create:</strong> Win-back campaigns for churned medical practices</p>
+                    </div>
+                </div>
+
+                <div class="recommendations">
+                    <h3>🎯 Long-term Strategy (12+ months)</h3>
+                    
+                    <div class="recommendation-item">
+                        <h4>1. Portfolio Optimization</h4>
+                        <p><strong>Target Ratio:</strong> 40% medical (revenue), 40% consulting (stability), 20% other<br>
+                        <strong>Geographic:</strong> Expansion in high-performing practice areas<br>
+                        <strong>Partnerships:</strong> Development with training institutions</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>2. Innovation Pipeline</h4>
+                        <p><strong>Monitor:</strong> Emerging practices (weight loss injectables growing fast)<br>
+                        <strong>Develop:</strong> First-mover advantage in new treatment categories<br>
+                        <strong>Create:</strong> Practice evolution pathways (beauty → medical aesthetics)</p>
+                    </div>
+
+                    <div class="recommendation-item">
+                        <h4>3. Value Maximization Framework</h4>
+                        <p><strong>Implement:</strong> Dynamic pricing based on practice risk profiles<br>
+                        <strong>Develop:</strong> Practice-specific add-on products<br>
+                        <strong>Create:</strong> Ecosystem partnerships for practice growth support</p>
+                    </div>
+                </div>
+
+                <div class="alert-success">
+                    <strong>💡 The Winning Formula:</strong><br>
+                    • <strong>Acquire</strong> medical/aesthetic practices for immediate revenue impact<br>
+                    • <strong>Retain</strong> consulting/professional services for long-term stability<br>
+                    • <strong>Prioritize</strong> firms over individuals across all practice types<br>
+                    • <strong>Focus</strong> on the 15 recommended target practices that balance all success factors
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global chart configuration
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        Chart.defaults.plugins.legend.position = 'bottom';
+
+        // Navigation functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav pills
+            document.querySelectorAll('.nav-pill').forEach(pill => {
+                pill.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav pill
+            event.target.classList.add('active');
+        }
+
+        // Initialize charts when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+            populateTopPractices();
+        });
+
+        function initializeCharts() {
+            // Customer Lifetime Analysis Chart
+            const lifetimeCtx = document.getElementById('lifetimeChart').getContext('2d');
+            new Chart(lifetimeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Naive Calculation', 'Survival Analysis (KM)', 'KM Median', 'Ultra-Conservative'],
+                    datasets: [{
+                        label: 'Years',
+                        data: [2.77, 5.88, 3.0, 4.0],
+                        backgroundColor: ['#e74c3c', '#2ecc71', '#3498db', '#f39c12'],
+                        borderColor: ['#c0392b', '#27ae60', '#2980b9', '#e67e22'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Revenue Trends Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'Average Revenue per Policy (£)',
+                        data: [70.58, 71.07, 72.60, 76.16, 77.83, 84.76, 82.46, 83.35, 82.86, 83.57],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 65,
+                            title: {
+                                display: true,
+                                text: 'Revenue (£)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Retention Probabilities Chart
+            const retentionCtx = document.getElementById('retentionChart').getContext('2d');
+            new Chart(retentionCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Year 1', 'Year 2', 'Year 3', 'Year 5', 'Year 10'],
+                    datasets: [{
+                        label: 'Survival Probability (%)',
+                        data: [73.1, 58.6, 49.8, 39.5, 27.2],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Survival Probability (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Practice Category Distribution Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wellness/Therapy', 'Beauty/Aesthetic', 'Coaching/Consulting', 'Medical/Clinical', 'Other'],
+                    datasets: [{
+                        data: [31.8, 21.8, 21.0, 5.4, 20.0],
+                        backgroundColor: ['#9b59b6', '#e74c3c', '#3498db', '#2ecc71', '#95a5a6'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Top Revenue Practices Chart
+            const topRevenueCtx = document.getElementById('topRevenueChart').getContext('2d');
+            new Chart(topRevenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Prescribing', 'PDO Threads', 'Hyperhydrosis', 'P-Shot/O-Shot', 'Weight Loss Inj.', 'Sclerotherapy', 'Non-Surg Rhino', 'Hyaluronidase', 'Fat Dissolving', 'Skin Boosters'],
+                    datasets: [{
+                        label: 'Revenue per Policy (£)',
+                        data: [162.28, 160.72, 156.45, 155.16, 154.23, 152.98, 152.80, 152.04, 151.41, 150.89],
+                        backgroundColor: '#e74c3c',
+                        borderColor: '#c0392b',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Revenue (£)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Top Tenure Practices Chart
+            const topTenureCtx = document.getElementById('topTenureChart').getContext('2d');
+            new Chart(topTenureCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Appreciative Inquiry', 'Psychometric Assess.', 'Talent Management', 'Team Building', 'Culture Change', 'Business Dev.', 'Personality Testing', 'Secret Shopping', 'Assertiveness', 'Train the Trainer'],
+                    datasets: [{
+                        label: 'Average Years',
+                        data: [6.8, 6.3, 6.1, 6.0, 6.0, 6.0, 5.9, 5.9, 5.9, 5.8],
+                        backgroundColor: '#3498db',
+                        borderColor: '#2980b9',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Strategic Targets Chart
+            const strategicCtx = document.getElementById('strategicTargetsChart').getContext('2d');
+            new Chart(strategicCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Immediate Revenue',
+                        data: [
+                            {x: 150.20, y: 1205, practice: 'Botox'},
+                            {x: 150.57, y: 1188, practice: 'Dermal Fillers'},
+                            {x: 151.41, y: 860, practice: 'Fat Dissolving'},
+                            {x: 160.72, y: 155, practice: 'PDO Threads'}
+                        ],
+                        backgroundColor: '#e74c3c',
+                        borderColor: '#c0392b',
+                        pointRadius: 8
+                    }, {
+                        label: 'Foundation Builders',
+                        data: [
+                            {x: 72.02, y: 666, practice: 'Public Speaking'},
+                            {x: 60.34, y: 880, practice: 'Train the Trainer'},
+                            {x: 59.71, y: 561, practice: 'Team Building'},
+                            {x: 62.69, y: 464, practice: 'Business Dev'}
+                        ],
+                        backgroundColor: '#3498db',
+                        borderColor: '#2980b9',
+                        pointRadius: 8
+                    }, {
+                        label: 'Premium Niches',
+                        data: [
+                            {x: 144.15, y: 99, practice: 'Hayfever Treatment'},
+                            {x: 51.78, y: 155, practice: 'Appreciative Inquiry'},
+                            {x: 152.98, y: 102, practice: 'Sclerotherapy'}
+                        ],
+                        backgroundColor: '#f39c12',
+                        borderColor: '#e67e22',
+                        pointRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Revenue per Policy (£)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Number of Customers'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.data[context.dataIndex].practice + 
+                                           ': £' + context.parsed.x + ', ' + context.parsed.y + ' customers';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // LTV vs Revenue Scatter Plot
+            const ltvRevenueCtx = document.getElementById('ltvRevenueScatter').getContext('2d');
+            new Chart(ltvRevenueCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'All Practices',
+                        data: [
+                            {x: 408.64, y: 144.15}, {x: 394.93, y: 51.78}, {x: 391.05, y: 72.02},
+                            {x: 378.94, y: 152.98}, {x: 378.76, y: 59.71}, {x: 377.91, y: 57.35},
+                            {x: 377.86, y: 160.72}, {x: 377.84, y: 62.69}, {x: 371.02, y: 57.60},
+                            {x: 369.35, y: 60.34}
+                        ],
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                        borderColor: '#3498db',
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Lifetime Value (£)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Revenue per Policy (£)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Company LTV Comparison Chart
+            const companyLTVCtx = document.getElementById('companyLTVChart').getContext('2d');
+            new Chart(companyLTVCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Firm', 'Group', 'Individual', 'Partnership'],
+                    datasets: [{
+                        label: 'Lifetime Value (£)',
+                        data: [272.76, 240.26, 197.95, 133.42],
+                        backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#9b59b6'],
+                        borderColor: ['#c0392b', '#e67e22', '#2980b9', '#8e44ad'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'LTV (£)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Company Growth Chart
+            const companyGrowthCtx = document.getElementById('companyGrowthChart').getContext('2d');
+            new Chart(companyGrowthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Partnership', 'Firm', 'Individual', 'Group'],
+                    datasets: [{
+                        label: 'Growth Rate (%)',
+                        data: [300, 47, 24, -11],
+                        backgroundColor: function(context) {
+                            const value = context.parsed.y;
+                            return value > 0 ? '#2ecc71' : '#e74c3c';
+                        },
+                        borderColor: function(context) {
+                            const value = context.parsed.y;
+                            return value > 0 ? '#27ae60' : '#c0392b';
+                        },
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Growth Rate (%)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Elite Profile Distribution Chart
+            const eliteCtx = document.getElementById('eliteProfileChart').getContext('2d');
+            new Chart(eliteCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Firm', 'Individual'],
+                    datasets: [{
+                        data: [80, 20],
+                        backgroundColor: ['#e74c3c', '#3498db'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top 10 Profiles by Company Type (%)'
+                        }
+                    }
+                }
+            });
+
+            // High-Value Opportunities Chart
+            const opportunitiesCtx = document.getElementById('opportunitiesChart').getContext('2d');
+            new Chart(opportunitiesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Firm + Public Speaking', 'Firm + Team Building', 'Firm + Talent Mgmt', 'Individual + Public Speaking'],
+                    datasets: [{
+                        label: 'Total Portfolio Value (£000s)',
+                        data: [50.5, 50.2, 37.4, 64.2],
+                        backgroundColor: '#2ecc71',
+                        borderColor: '#27ae60',
+                        borderWidth: 2
+                    }, {
+                        label: 'Customer Count',
+                        data: [111, 109, 83, 149],
+                        backgroundColor: '#3498db',
+                        borderColor: '#2980b9',
+                        borderWidth: 2,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Portfolio Value (£000s)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Customer Count'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                        }
+                    }
+                }
+            });
+
+            // Introducer Comparison Chart
+            const introducerCtx = document.getElementById('introducerComparisonChart').getContext('2d');
+            new Chart(introducerCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Customer Count', 'Revenue per Policy', 'Tenure (Years)', 'LTV', 'Active Rate'],
+                    datasets: [{
+                        label: 'Introducer Customers',
+                        data: [15560, 68.59, 2.95, 202.22, 47.4],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        pointRadius: 5
+                    }, {
+                        label: 'Direct Customers',
+                        data: [14134, 81.58, 2.57, 209.82, 50.0],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Top Introducers Chart
+            const topIntroducersCtx = document.getElementById('topIntroducersChart').getContext('2d');
+            new Chart(topIntroducersCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['CMA', 'IPHM', 'Gateway', 'Elizabeth Sands', 'Noble Manhattan', 'APDO-UK', 'ICF', 'SkinAstute', 'Centre Excellence'],
+                    datasets: [{
+                        label: 'Customer Count',
+                        data: [584, 553, 491, 452, 420, 393, 338, 320, 319],
+                        backgroundColor: '#9b59b6',
+                        borderColor: '#8e44ad',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Customers'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateTopPractices() {
+            // Top Revenue Practices
+            const topRevenue = [
+                {rank: 1, name: 'Prescribing', revenue: '£162.28', customers: 54, years: 2.0, ltv: '£305.60'},
+                {rank: 2, name: 'PDO Threads', revenue: '£160.72', customers: 155, years: 2.4, ltv: '£377.86'},
+                {rank: 3, name: 'Hyperhydrosis Treatment', revenue: '£156.45', customers: 142, years: 2.1, ltv: '£332.12'},
+                {rank: 4, name: 'P-Shot and O-Shot PRP', revenue: '£155.16', customers: 24, years: 2.4, ltv: '£338.31'},
+                {rank: 5, name: 'Weight Loss Injectibles', revenue: '£154.23', customers: 231, years: 2.0, ltv: '£308.66'}
+            ];
+
+            const topTenure = [
+                {rank: 1, name: 'Appreciative Inquiry', years: 6.8, customers: 155, revenue: '£51.78', ltv: '£394.93'},
+                {rank: 2, name: 'Psychometric Assessment', years: 6.3, customers: 473, revenue: '£57.35', ltv: '£377.91'},
+                {rank: 3, name: 'Talent Management', years: 6.1, customers: 261, revenue: '£56.40', ltv: '£368.90'},
+                {rank: 4, name: 'Team Building Exercises', years: 6.0, customers: 561, revenue: '£59.71', ltv: '£378.76'},
+                {rank: 5, name: 'Culture Change Training', years: 6.0, customers: 284, revenue: '£57.60', ltv: '£371.02'}
+            ];
+
+            const topLTV = [
+                {rank: 1, name: 'Hayfever Treatment', ltv: '£408.64', revenue: '£144.15', years: 2.8, customers: 99},
+                {rank: 2, name: 'Appreciative Inquiry', ltv: '£394.93', revenue: '£51.78', years: 6.8, customers: 155},
+                {rank: 3, name: 'Public Speaking', ltv: '£391.05', revenue: '£72.02', years: 5.6, customers: 666},
+                {rank: 4, name: 'Sclerotherapy', ltv: '£378.94', revenue: '£152.98', years: 2.5, customers: 102},
+                {rank: 5, name: 'Team Building Exercises', ltv: '£378.76', revenue: '£59.71', years: 6.0, customers: 561}
+            ];
+
+            populatePracticeList('topRevenuePractices', topRevenue, 'revenue');
+            populatePracticeList('topTenurePractices', topTenure, 'tenure');
+            populatePracticeList('topLTVPractices', topLTV, 'ltv');
+        }
+
+        function populatePracticeList(containerId, practices, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            practices.forEach(practice => {
+                const practiceDiv = document.createElement('div');
+                practiceDiv.style.marginBottom = '1rem';
+                practiceDiv.style.padding = '1rem';
+                practiceDiv.style.backgroundColor = '#f8f9fa';
+                practiceDiv.style.borderRadius = '8px';
+                practiceDiv.style.borderLeft = '4px solid #3498db';
+
+                let primaryMetric = '';
+                if (type === 'revenue') primaryMetric = practice.revenue;
+                else if (type === 'tenure') primaryMetric = practice.years + ' years';
+                else if (type === 'ltv') primaryMetric = practice.ltv;
+
+                practiceDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="practice-rank">${practice.rank}</span>
+                        <span class="practice-name">${practice.name}</span>
+                    </div>
+                    <div style="font-size: 1.1rem; font-weight: 600; color: #2c3e50; margin-bottom: 0.5rem;">
+                        ${primaryMetric}
+                    </div>
+                    <div class="practice-metrics">
+                        <div class="practice-metric">
+                            <span>Customers:</span>
+                            <span>${practice.customers}</span>
+                        </div>
+                        <div class="practice-metric">
+                            <span>LTV:</span>
+                            <span>${practice.ltv || practice.ltv}</span>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(practiceDiv);
+            });
+        }
+    </script>
+</body>
+</html>
