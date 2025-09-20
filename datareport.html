@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Westminster Customer Data Analysis Report</title>
+  <style>
+    /* ===========================
+       Westminster Data — Clean Report Style
+       Inspired by the reference page: clean white canvas, blue accents,
+       subtle dividers, crisp tables, and unobtrusive UI controls.
+       =========================== */
+
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #0f172a;          /* slate-900 */
+      --muted: #475569;        /* slate-600 */
+      --border: #e5e7eb;       /* gray-200 */
+      --soft: #f3f4f6;         /* gray-100 */
+      --primary: #2563eb;      /* blue-600 */
+      --primary-700:#1d4ed8;   /* blue-700 */
+      --primary-050:#eff6ff;   /* blue-50 */
+      --success:#16a34a;       /* green-600 */
+      --warning:#b45309;       /* amber-700 */
+      --chip:#0ea5e9;          /* sky-600 (for small accents) */
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.08);
+      --shadow-lg: 0 8px 24px rgba(0,0,0,.06);
+      --maxw: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; }
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header{
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .header-inner{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 28px 20px;
+    }
+    header h1{
+      font-size: clamp(1.6rem, 2.4vw, 2.1rem);
+      line-height: 1.2;
+      margin: 0 0 6px 0;
+      letter-spacing: -0.01em;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .header-meta{
+      display: flex; gap: 18px; flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .header-meta strong{ color: var(--ink); font-weight: 600; }
+
+    /* Sticky nav + tabs bar (segmented control) */
+    nav{
+      position: sticky; top: 0; z-index: 50;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex; gap: 10px; flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .tab-btn{
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--soft);
+      color: var(--ink);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.94rem;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, color .15s ease, transform .06s ease;
+    }
+    .tab-btn:hover{ background:#eef2ff; border-color:#dbeafe; }
+    .tab-btn:active{ transform: translateY(1px); }
+    .tab-btn.active{
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Main wrapper */
+    main{ max-width: var(--maxw); margin: 18px auto 64px; padding: 0 20px; }
+
+    /* Section as "pages" */
+    .section{ display: none; margin: 0 0 32px 0; }
+    .section.active{ display: block; }
+
+    h2{
+      font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+      margin: 0 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      color: var(--ink);
+      font-weight: 700;
+    }
+    h3{
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      margin: 22px 0 10px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    h4{
+      font-size: 1.02rem;
+      margin: 10px 0 8px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    /* Informational blocks (muted cards) */
+    .info, .warning, .success{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      margin: 14px 0 18px;
+    }
+    .warning{ border-left-color: var(--warning); }
+    .success{ border-left-color: var(--success); }
+    .info h3, .warning h4, .success h4{ margin-top: 0; }
+
+    /* Metric cards grid (clean, flat, subtle shadow) */
+    .metric-grid{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 12px 0 6px;
+    }
+    .metric-card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px 14px 12px;
+    }
+    .metric-card h4{ margin-top: 0; color: var(--muted); font-weight: 600; }
+    .metric-value{
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--primary-700);
+      font-size: clamp(1.25rem, 2.4vw, 1.8rem);
+      margin: 2px 0 6px;
+    }
+    .metric-sub{ color: var(--muted); font-size: .92rem; }
+
+    /* Tables — crisp & compact */
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin: 10px 0 16px;
+      font-size: .97rem;
+    }
+    thead th{
+      background: var(--soft);
+      color: var(--ink);
+      text-align: left;
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+    tbody td{
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+    }
+    tbody tr:nth-child(even){ background: #fafafa; }
+    tbody tr:hover{ background: var(--primary-050); }
+    .rank{ font-weight: 800; color: var(--primary-700); }
+
+    /* Pattern / insight chip */
+    .pattern{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--chip);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      color: var(--ink);
+      box-shadow: var(--shadow);
+      margin: 10px 0 16px;
+    }
+
+    /* Back-to-top floating button (minimal) */
+    .scroll-top{
+      position: fixed;
+      right: 16px; bottom: 16px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--primary-700);
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      display: none;
+    }
+    .scroll-top:hover{ background: var(--soft); }
+
+    /* Mobile niceties */
+    @media (max-width: 640px){
+      .header-meta{ gap: 10px; }
+      .tab-btn{ font-size: .9rem; padding: 7px 10px; }
+      table{ font-size: .95rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Westminster Customer Data Analysis Report</h1>
+      <div class="header-meta">
+        <div><strong>Report Date:</strong> September 20, 2025</div>
+        <div><strong>Analysis Period:</strong> 14+ Years Historical Data</div>
+        <div><strong>Total Customers:</strong> 29,694</div>
+        <div><strong>Business Practices:</strong> 742</div>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-inner" role="tablist" aria-label="Report sections">
+      <button class="tab-btn active" data-target="executive-summary" role="tab" aria-selected="true" aria-controls="executive-summary">Executive Summary</button>
+      <button class="tab-btn" data-target="business-metrics" role="tab" aria-selected="false" aria-controls="business-metrics">Business Metrics</button>
+      <button class="tab-btn" data-target="top-practices" role="tab" aria-selected="false" aria-controls="top-practices">Top Practices</button>
+      <button class="tab-btn" data-target="recommendations" role="tab" aria-selected="false" aria-controls="recommendations">Recommendations</button>
+      <button class="tab-btn" data-target="company-types" role="tab" aria-selected="false" aria-controls="company-types">Company Types</button>
+      <button class="tab-btn" data-target="customer-profiles" role="tab" aria-selected="false" aria-controls="customer-profiles">Customer Profiles</button>
+      <button class="tab-btn" data-target="introducers" role="tab" aria-selected="false" aria-controls="introducers">Introducers</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Executive Summary -->
+    <section id="executive-summary" class="section active">
+      <h2>Executive Summary</h2>
+      <div class="info">
+        <p>This analysis of <strong>29,694 customers</strong> across <strong>742 business practices</strong> reveals distinct customer segments with varying lifetime values and tenure patterns.</p>
+        <p>There is an <strong>inverse relationship</strong> between revenue per policy and customer tenure: medical practices generate high revenue (£140–160/policy) but shorter tenure (~2 years), while professional/consulting practices offer lower revenue (£50–70/policy) but longer tenure (~6 years).</p>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <h4>True Customer Lifetime</h4>
+          <div class="metric-value">5.88 years</div>
+          <div class="metric-sub">Kaplan-Meier survival analysis</div>
+        </div>
+        <div class="metric-card">
+          <h4>Conservative Estimate</h4>
+          <div class="metric-value">4.00 years</div>
+          <div class="metric-sub">For financial planning</div>
+        </div>
+        <div class="metric-card">
+          <h4>Revenue per Policy</h4>
+          <div class="metric-value">£83.43</div>
+          <div class="metric-sub">Recent 5-year average</div>
+        </div>
+        <div class="metric-card">
+          <h4>Forward-Looking LTV</h4>
+          <div class="metric-value">£333.72</div>
+          <div class="metric-sub">4 years × £83.43</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Business Metrics -->
+    <section id="business-metrics" class="section">
+      <h2>Overall Business Metrics</h2>
+
+      <div class="warning">
+        <h4>Critical Methodological Note: Survival Analysis</h4>
+        <p>Nearly 50% of customers are still active (right-censored data). Simple averages underestimate customer lifetime by treating active customers as if they churn immediately. Kaplan-Meier properly accounts for these ongoing relationships.</p>
+      </div>
+
+      <h3>Customer Lifetime Analysis — Final Figures</h3>
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Value</th><th>Use Case</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Naive Calculation</strong></td><td>2.77 years</td><td style="color:#b91c1c;">Misleading — DO NOT USE</td></tr>
+          <tr><td><strong>Survival analysis (Kaplan-Meier) Average</strong></td><td>5.88 years</td><td>Strategic planning, market valuation</td></tr>
+          <tr><td><strong>Survival analysis (Kaplan-Meier) Median</strong></td><td>3.0 years</td><td>Kaplan-Meier median</td></tr>
+          <tr><td><strong>Ultra-Conservative</strong></td><td>4.0 years</td><td>Financial planning, budgeting, ROI</td></tr>
+          <tr><td><strong>Active Customers</strong></td><td>14,438 (48.6%)</td><td>Right-censored observations</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Retention Probabilities</h3>
+      <table>
+        <thead>
+          <tr><th>Year</th><th>Survival Probability</th><th>Interpretation</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>73.1%</td><td>27% churn in first year</td></tr>
+          <tr><td>2</td><td>58.6%</td><td>41% churned by year 2</td></tr>
+          <tr><td>3</td><td>49.8%</td><td>Median survival point</td></tr>
+          <tr><td>5</td><td>39.5%</td><td>40% survive 5+ years</td></tr>
+          <tr><td>10</td><td>27.2%</td><td>Over 1 in 4 stay 10+ years</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Revenue Trends Over Time</h3>
+      <table>
+        <thead>
+          <tr><th>Year</th><th>Avg Revenue/Policy</th><th>YoY Change</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2016</td><td>£70.58</td><td>-</td></tr>
+          <tr><td>2017</td><td>£71.07</td><td>+0.7%</td></tr>
+          <tr><td>2018</td><td>£72.60</td><td>+2.2%</td></tr>
+          <tr><td>2019</td><td>£76.16</td><td>+4.9%</td></tr>
+          <tr><td>2020</td><td>£77.83</td><td>+2.2%</td></tr>
+          <tr><td><strong>2021</strong></td><td><strong>£84.76</strong></td><td><strong>+8.9%</strong></td></tr>
+          <tr><td>2022</td><td>£82.46</td><td>-2.7%</td></tr>
+          <tr><td>2023</td><td>£83.35</td><td>+1.1%</td></tr>
+          <tr><td>2024</td><td>£82.86</td><td>-0.6%</td></tr>
+          <tr><td>2025</td><td>£83.57</td><td>+0.9%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>Key Insight:</strong> Revenue per policy experienced a structural shift in 2021, jumping to a new stable plateau of £84.76 and maintaining the £82–85 range for 5 consecutive years.</p>
+      </div>
+    </section>
+
+    <!-- Top Practices -->
+    <section id="top-practices" class="section">
+      <h2>Top Practices Analysis</h2>
+
+      <h3>TOP 20 PRACTICES BY REVENUE PER POLICY</h3>
+      <p><em>(Minimum 20 customers for statistical significance)</em></p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th><th>Practice</th><th>Revenue/Policy</th><th>Customers</th><th>Avg Years</th><th>LTV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>Prescribing</td><td>£162.28</td><td>54</td><td>2.0</td><td>£305.60</td></tr>
+          <tr><td class="rank">2</td><td>PDO Threads</td><td>£160.72</td><td>155</td><td>2.4</td><td>£377.86</td></tr>
+          <tr><td class="rank">3</td><td>Hyperhydrosis Treatment</td><td>£156.45</td><td>142</td><td>2.1</td><td>£332.12</td></tr>
+          <tr><td class="rank">4</td><td>P-Shot and O-Shot PRP</td><td>£155.16</td><td>24</td><td>2.4</td><td>£338.31</td></tr>
+          <tr><td class="rank">5</td><td>Weight Loss Injectibles</td><td>£154.23</td><td>231</td><td>2.0</td><td>£308.66</td></tr>
+          <tr><td class="rank">6</td><td>Sclerotherapy</td><td>£152.98</td><td>102</td><td>2.5</td><td>£378.94</td></tr>
+          <tr><td class="rank">7</td><td>Non-Surgical Rhinoplasty</td><td>£152.80</td><td>200</td><td>2.0</td><td>£296.91</td></tr>
+          <tr><td class="rank">8</td><td>Hyaluronidase Treatment</td><td>£152.04</td><td>760</td><td>1.8</td><td>£279.30</td></tr>
+          <tr><td class="rank">9</td><td>Fat Dissolving</td><td>£151.41</td><td>860</td><td>2.0</td><td>£296.26</td></tr>
+          <tr><td class="rank">10</td><td>Skin Boosters</td><td>£150.89</td><td>769</td><td>2.0</td><td>£303.50</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>Pattern:</strong> Medical and aesthetic procedures dominate, all above £139 per policy.</p>
+      </div>
+
+      <h3>TOP 20 PRACTICES BY CUSTOMER TENURE</h3>
+      <p><em>(Minimum 20 customers for statistical significance)</em></p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th><th>Practice</th><th>Avg Years</th><th>Customers</th><th>Revenue/Policy</th><th>LTV</th><th>Retention</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td>Appreciative Inquiry</td><td>6.8</td><td>155</td><td>£51.78</td><td>£394.93</td><td>47.1%</td></tr>
+          <tr><td class="rank">2</td><td>Psychometric Assessment</td><td>6.3</td><td>473</td><td>£57.35</td><td>£377.91</td><td>53.7%</td></tr>
+          <tr><td class="rank">3</td><td>Talent Management</td><td>6.1</td><td>261</td><td>£56.40</td><td>£368.90</td><td>49.0%</td></tr>
+          <tr><td class="rank">4</td><td>Team Building Exercises</td><td>6.0</td><td>561</td><td>£59.71</td><td>£378.76</td><td>48.5%</td></tr>
+          <tr><td class="rank">5</td><td>Culture Change Training</td><td>6.0</td><td>284</td><td>£57.60</td><td>£371.02</td><td>51.8%</td></tr>
+          <tr><td class="rank">6</td><td>Business Development Consultancy</td><td>6.0</td><td>464</td><td>£62.69</td><td>£377.84</td><td>48.5%</td></tr>
+          <tr><td class="rank">7</td><td>Personality Type Testing</td><td>5.9</td><td>371</td><td>£56.52</td><td>£354.59</td><td>52.8%</td></tr>
+          <tr><td class="rank">8</td><td>Secret Shopping</td><td>5.9</td><td>37</td><td>£52.42</td><td>£343.64</td><td>37.8%</td></tr>
+          <tr><td class="rank">9</td><td>Assertiveness Training</td><td>5.9</td><td>483</td><td>£53.03</td><td>£351.10</td><td>43.3%</td></tr>
+          <tr><td class="rank">10</td><td>Train the Trainer</td><td>5.8</td><td>880</td><td>£60.34</td><td>£369.35</td><td>46.1%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>TOP 20 PRACTICES BY LIFETIME VALUE</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th><th>Practice</th><th>LTV</th><th>Revenue/Policy</th><th>Avg Years</th><th>Customers</th><th>Retention</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td><strong>Whole Woman</strong></td><td><strong>£408.82</strong></td><td>£83.90</td><td>5.2</td><td>24</td><td>62.5%</td></tr>
+          <tr><td class="rank">2</td><td><strong>Hayfever Treatment</strong></td><td><strong>£408.64</strong></td><td>£144.15</td><td>2.8</td><td>99</td><td>73.7%</td></tr>
+          <tr><td class="rank">3</td><td><strong>Appreciative Inquiry</strong></td><td><strong>£394.93</strong></td><td>£51.78</td><td>6.8</td><td>155</td><td>47.1%</td></tr>
+          <tr><td class="rank">4</td><td>Gift Wrapping</td><td>£392.23</td><td>£75.93</td><td>5.5</td><td>25</td><td>60.0%</td></tr>
+          <tr><td class="rank">5</td><td><strong>Public Speaking</strong></td><td><strong>£391.05</strong></td><td>£72.02</td><td>5.6</td><td>666</td><td>60.5%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>The Inverse Relationship:</strong> <em>High Revenue ↔ Short Tenure:</em> Medical practices (£140–160/policy, 1.8–2.5 years). <em>Low Revenue ↔ Long Tenure:</em> Consulting practices (£50–70/policy, 5–7 years).</p>
+      </div>
+    </section>
+
+    <!-- Recommendations -->
+    <section id="recommendations" class="section">
+      <h2>Best Practices to Target</h2>
+
+      <div class="info">
+        <p>Based on comprehensive scoring across multiple dimensions (LTV, revenue, tenure, volume, retention):</p>
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card"><div class="rank">1</div><strong>Public Speaking</strong><br><span class="metric-sub">666 customers, £391 LTV, 5.6 years, 60.5% retention</span></div>
+        <div class="metric-card"><div class="rank">2</div><strong>Train the Trainer</strong><br><span class="metric-sub">880 customers, £369 LTV, 5.8 years</span></div>
+        <div class="metric-card"><div class="rank">3</div><strong>Team Building Exercises</strong><br><span class="metric-sub">561 customers, £379 LTV, 6.0 years</span></div>
+        <div class="metric-card"><div class="rank">4</div><strong>Business Development Consultancy</strong><br><span class="metric-sub">464 customers, £378 LTV, 6.0 years</span></div>
+        <div class="metric-card"><div class="rank">5</div><strong>Psychometric Assessment</strong><br><span class="metric-sub">473 customers, £378 LTV, 6.3 years</span></div>
+      </div>
+    </section>
+
+    <!-- Company Types -->
+    <section id="company-types" class="section">
+      <h2>Company Types Analysis</h2>
+
+      <div class="info">
+        <p><strong>Key Discovery:</strong> Firms deliver <strong>38% higher lifetime value</strong> than Individuals despite comprising only 13.8% of the customer base. Partnerships show exceptional 75% retention but shortest tenure.</p>
+      </div>
+
+      <h3>Company Type Breakdown</h3>
+      <table>
+        <thead>
+          <tr><th>Company Type</th><th>Count</th><th>% of Base</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Individual</strong></td><td>24,857</td><td>84.2%</td><td>Core segment</td></tr>
+          <tr><td><strong>Firm</strong></td><td>4,062</td><td>13.8%</td><td>High value</td></tr>
+          <tr><td><strong>Group</strong></td><td>527</td><td>1.8%</td><td>Niche</td></tr>
+          <tr><td><strong>Partnership</strong></td><td>80</td><td>0.3%</td><td>Emerging</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Lifetime Value Comparison</h3>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Type</th><th>LTV</th><th>vs Best</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td><strong>Firm</strong></td><td><strong>£272.76</strong></td><td>-</td></tr>
+          <tr><td class="rank">2</td><td>Group</td><td>£240.26</td><td>-11.9%</td></tr>
+          <tr><td class="rank">3</td><td>Individual</td><td>£197.95</td><td>-27.4%</td></tr>
+          <tr><td class="rank">4</td><td>Partnership</td><td>£133.42</td><td>-51.1%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>Major Insight:</strong> Firms deliver <strong>38% higher LTV</strong> than Individuals (£273 vs £198), suggesting significant B2B opportunities.</p>
+      </div>
+    </section>
+
+    <!-- Customer Profiles -->
+    <section id="customer-profiles" class="section">
+      <h2>Ultimate High-Value Customer Profile Analysis</h2>
+
+      <div class="info">
+        <p><strong>Key Discovery:</strong> The highest-value customer profile is <strong>Firm + Hayfever Treatment + Direct</strong> with an LTV of £682.20. Firms dominate 80% of top 10 profiles, achieving 5.5 years average tenure and £549 average LTV — <strong>2.5× the overall average</strong>.</p>
+      </div>
+
+      <h3>The Elite Top 10 ⭐</h3>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Company Type</th><th>Business Practice</th><th>Channel</th><th>LTV</th><th>Revenue</th><th>Years</th><th>Customers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td><strong>Firm</strong></td><td><strong>Hayfever Treatment</strong></td><td><strong>Direct</strong></td><td><strong>£682</strong></td><td>£175</td><td>3.9</td><td>10</td></tr>
+          <tr><td class="rank">2</td><td>Firm</td><td>Weight Loss Practitioner</td><td>Direct</td><td>£587</td><td>£113</td><td>5.2</td><td>31</td></tr>
+          <tr><td class="rank">3</td><td>Firm</td><td>First Aid Training</td><td>Via Introducer</td><td>£558</td><td>£77</td><td>7.3</td><td>12</td></tr>
+          <tr><td class="rank">4</td><td>Firm</td><td>First Aid at Work</td><td>Via Introducer</td><td>£550</td><td>£85</td><td>6.5</td><td>10</td></tr>
+          <tr><td class="rank">5</td><td>Individual</td><td>Gift Wrapping</td><td>Via Introducer</td><td>£546</td><td>£75</td><td>7.3</td><td>11</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>Key Patterns in Top 10:</strong> Firms 8/10 (80%); Channel split ~50/50; Avg LTV £549 (~2.5× overall); Avg Tenure 5.5 years (~2× overall).</p>
+      </div>
+    </section>
+
+    <!-- Introducers -->
+    <section id="introducers" class="section">
+      <h2>Introducer Performance Analysis</h2>
+
+      <div class="info">
+        <p>Introducer partnerships account for <strong>52.4% of all customers</strong>. While direct customers have 15.9% higher revenue per policy, introducer customers stay 14.6% longer, resulting in comparable lifetime values.</p>
+      </div>
+
+      <h3>Introducer vs Direct Customer Value</h3>
+      <table>
+        <thead>
+          <tr><th>Metric</th><th>Introducer Customers</th><th>Direct Customers</th><th>Difference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Customer Count</strong></td><td>15,560 (52.4%)</td><td>14,134 (47.6%)</td><td>+10% more via introducers</td></tr>
+          <tr><td><strong>Avg Revenue/Policy</strong></td><td>£68.59</td><td>£81.58</td><td>-15.9%</td></tr>
+          <tr><td><strong>Avg Years (Tenure)</strong></td><td>2.95 years</td><td>2.57 years</td><td>+14.6%</td></tr>
+          <tr><td><strong>Lifetime Value</strong></td><td>£202.22</td><td>£209.82</td><td>-3.6%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Top Revenue-Producing Introducers</h3>
+      <table>
+        <thead>
+          <tr><th>Rank</th><th>Introducer</th><th>Customers</th><th>Avg LTV</th><th>Active Rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rank">1</td><td><strong>APDO-UK</strong></td><td>393</td><td>£246.17</td><td>52.2%</td></tr>
+          <tr><td class="rank">2</td><td>Complementary Medical Association</td><td>584</td><td>£165.65</td><td>51.2%</td></tr>
+          <tr><td class="rank">3</td><td>Int'l Practitioners of Holistic Medicine</td><td>553</td><td>£171.30</td><td>54.6%</td></tr>
+          <tr><td class="rank">4</td><td>Noble Manhattan Coaching Ltd</td><td>420</td><td>£145.60</td><td>20.7%</td></tr>
+          <tr><td class="rank">5</td><td>International Coach Federation</td><td>338</td><td>£268.02</td><td>51.8%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="pattern">
+        <p><strong>Strategic Insights:</strong> Direct customers pay premium prices (£81.58 vs £68.59); Introducer customers show better loyalty (2.95 vs 2.57 years); Top 20% of introducers generate 72% of introducer revenue.</p>
+      </div>
+    </section>
+  </main>
+
+  <button class="scroll-top" title="Back to top" aria-label="Back to top">↑</button>
+
+  <script>
+    // Tabs controller (SPA-like pages)
+    (function () {
+      const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+      const sections = Array.from(document.querySelectorAll('main .section'));
+
+      function setActive(id, push = true) {
+        if (!id) return;
+        sections.forEach(s => s.classList.toggle('active', s.id === id));
+        buttons.forEach(b => {
+          const on = b.dataset.target === id;
+          b.classList.toggle('active', on);
+          b.setAttribute('aria-selected', on ? 'true' : 'false');
+          b.tabIndex = on ? 0 : -1;
+        });
+        if (push) history.pushState({ section: id }, '', '#' + id);
+      }
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => setActive(btn.dataset.target));
+        btn.addEventListener('keydown', (e) => {
+          if (!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)) return;
+          e.preventDefault();
+          const idx = buttons.indexOf(btn);
+          let nextIdx = idx;
+          if (e.key === 'ArrowRight') nextIdx = (idx + 1) % buttons.length;
+          if (e.key === 'ArrowLeft')  nextIdx = (idx - 1 + buttons.length) % buttons.length;
+          if (e.key === 'Home') nextIdx = 0;
+          if (e.key === 'End')  nextIdx = buttons.length - 1;
+          buttons[nextIdx].focus();
+          setActive(buttons[nextIdx].dataset.target);
+        });
+      });
+
+      const initial = (location.hash || '').replace('#','') || sections[0]?.id;
+      setActive(initial, false);
+
+      window.addEventListener('popstate', () => {
+        const id = (location.hash || '').replace('#','') || sections[0]?.id;
+        setActive(id, false);
+      });
+    })();
+
+    // Back-to-top button visibility & action
+    (function(){
+      const btn = document.querySelector('.scroll-top');
+      function toggle(){ btn.style.display = (window.pageYOffset > 120) ? 'block' : 'none'; }
+      window.addEventListener('scroll', toggle, { passive:true });
+      toggle();
+      btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+    })();
+
+    // Make internal anchor clicks also activate tabs if IDs match
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const id = this.getAttribute('href').replace('#','');
+        const target = document.getElementById(id);
+        if (target){
+          e.preventDefault();
+          const btn = document.querySelector('.tab-btn[data-target="'+id+'"]');
+          if (btn) btn.click();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
