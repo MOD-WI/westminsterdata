@@ -420,7 +420,7 @@
         <nav class="nav-pills">
             <button class="nav-pill active" onclick="showSection('executive')">📊 Executive Summary</button>
             <button class="nav-pill" onclick="showSection('metrics')">📈 Business Metrics</button>
-            <button class="nav-pill" onclick="showSection('rankings')">🏆 Top Rankings</button>
+            <button class="nav-pill" onclick="showSection('rankings')">🏆 Practices</button>
             <button class="nav-pill" onclick="showSection('targets')">🎯 Strategic Targets</button>
             <button class="nav-pill" onclick="showSection('company-types')">🏢 Company Types</button>
             <button class="nav-pill" onclick="showSection('profiles')">👤 Customer Profiles</button>
@@ -549,7 +549,7 @@
                 </div>
             </div>
 
-            <!-- Top Rankings Section -->
+            <!-- Practices Section -->
             <div id="rankings" class="section">
                 <div class="section-header">
                     <h2>Top 20 Rankings by Key Metrics</h2>
