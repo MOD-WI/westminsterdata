@@ -54,11 +54,12 @@
         
         .logo-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            padding: 0.8rem 2rem;
-            background: #e9ecef;
+            gap: 0.8rem;
+            padding: 1.2rem 2.5rem;
+            background: #737373;
             border-radius: 8px;
         }
         
@@ -68,10 +69,11 @@
         }
         
         .company-name {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: var(--primary-dark);
-            margin-left: 0.5rem;
+            color: #ffffff;
+            text-align: center;
+            letter-spacing: 0.5px;
         }
         
         /* Navigation */
@@ -109,7 +111,7 @@
         
         /* Main Content */
         .main-content {
-            margin-top: 150px;
+            margin-top: 200px;
             padding: 2rem;
             max-width: 1400px;
             margin-left: auto;
@@ -118,7 +120,7 @@
         
         .section {
             margin-bottom: 4rem;
-            scroll-margin-top: 140px;
+            scroll-margin-top: 160px;
         }
         
         .section-header {
@@ -389,7 +391,7 @@
             <div class="logo-section">
                 <!-- Westminster Logo - Replace the src with your base64 encoded image -->
                 <img src="westminster-logo.png" alt="Westminster Insurance" class="logo-img">
-                <div class="company-name">Customer Analytics</div>
+                <div class="company-name">Customer Data Analysis Report</div>
             </div>
             <nav class="nav-buttons">
                 <a href="#summary" class="nav-btn active">Executive Summary</a>
