@@ -1436,7 +1436,7 @@
             </div>
 
             <div class="chart-container">
-                <div class="chart-title">Company Type Growth Trends (2020-2025)</div>
+                <div class="chart-title">Firm Growth Over Time (2020-2025)</div>
                 <canvas id="growthChart"></canvas>
             </div>
 
@@ -2174,36 +2174,14 @@
                 labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
                 datasets: [
                     {
-                        label: 'Individuals',
-                        data: [2184, 3230, 2758, 3117, 3336, 3238],
-                        borderColor: '#550266',
-                        backgroundColor: 'rgba(85, 2, 102, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    },
-                    {
                         label: 'Firms',
                         data: [285, 397, 375, 420, 584, 544],
                         borderColor: '#ff784f',
                         backgroundColor: 'rgba(255, 120, 79, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Groups',
-                        data: [28, 33, 21, 21, 30, 22],
-                        borderColor: '#feaf48',
-                        backgroundColor: 'rgba(254, 175, 72, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Partnerships',
-                        data: [3, 3, 9, 15, 29, 22],
-                        borderColor: '#b168ee',
-                        backgroundColor: 'rgba(177, 104, 238, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#ff784f'
                     }
                 ]
             },
@@ -2212,8 +2190,10 @@
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'top'
+                        display: false
+                    },
+                    title: {
+                        display: false
                     }
                 },
                 scales: {
@@ -2221,7 +2201,7 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'New Customers per Year'
+                            text: 'New Firm Customers per Year'
                         }
                     }
                 }
