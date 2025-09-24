@@ -282,6 +282,54 @@
         .data-table tbody tr:nth-child(even) {
             background: rgba(0, 0, 0, 0.02);
         }
+
+        .model-comparison-wrapper {
+            margin-top: 1.5rem;
+        }
+
+        .model-comparison-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        .model-comparison-table .section-row td {
+            background: rgba(85, 2, 102, 0.08);
+            color: var(--primary-dark);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .model-comparison-table .section-row:hover td {
+            background: rgba(85, 2, 102, 0.12);
+        }
+
+        .model-comparison-table td.submetric {
+            padding-left: 2.5rem;
+            position: relative;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .model-comparison-table td.submetric::before {
+            content: '\2022';
+            position: absolute;
+            left: 1.2rem;
+            color: var(--primary-orange);
+            font-weight: 600;
+        }
+
+        .model-comparison-table .summary-row td {
+            background: rgba(254, 175, 72, 0.12);
+            font-weight: 600;
+        }
+
+        .model-comparison-table .summary-row:hover td {
+            background: rgba(254, 175, 72, 0.18);
+        }
         
         /* Badges */
         .badge {
@@ -536,6 +584,64 @@
                         <li style="margin-bottom: 0.5rem;"><strong>• Accurate Median (3.0)</strong>: Kaplan-Meier median - point where 50% survival probability</li>
                         <li><strong>• Ultra-Conservative (4.0)</strong>: Conservative round number for risk-averse financial planning</li>
                     </ul>
+                </div>
+
+                <div class="model-comparison-wrapper">
+                    <h4 class="model-comparison-title">Models Comparision</h4>
+                    <table class="data-table model-comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Analysis Method</th>
+                                <th>ChatGPT</th>
+                                <th>Gemini</th>
+                                <th>Claude</th>
+                                <th>Claude 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="section-row">
+                                <td colspan="5">Naive Calculation</td>
+                            </tr>
+                            <tr>
+                                <td class="submetric">Average Lifetime</td>
+                                <td>~2.77</td>
+                                <td>3.52</td>
+                                <td>2.77</td>
+                                <td>2.77</td>
+                            </tr>
+                            <tr>
+                                <td class="submetric">Median Lifetime</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td></td>
+                            </tr>
+                            <tr class="section-row">
+                                <td colspan="5">Survival Analysis (Kaplan-Meier)</td>
+                            </tr>
+                            <tr>
+                                <td class="submetric">Average Lifetime</td>
+                                <td>~6.65</td>
+                                <td>6.13</td>
+                                <td>6.65</td>
+                                <td>5.88</td>
+                            </tr>
+                            <tr>
+                                <td class="submetric">Median Lifetime</td>
+                                <td>4</td>
+                                <td>4</td>
+                                <td>2.97</td>
+                                <td>3</td>
+                            </tr>
+                            <tr class="summary-row">
+                                <td>Weighted Best Estimate (Conservative)</td>
+                                <td>3.25 - 4.90</td>
+                                <td>4</td>
+                                <td>4.5</td>
+                                <td>4.73</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
