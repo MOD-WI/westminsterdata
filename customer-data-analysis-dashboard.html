@@ -534,7 +534,9 @@
 
             <div class="highlight-box">
                 <div class="highlight-title">⚠️ Critical Methodological Note</div>
-                <p>Nearly 50% of customers are still active (right-censored data). Simple averages severely underestimate customer lifetime. Kaplan-Meier survival analysis properly accounts for these ongoing relationships.</p>
+                <p>Nearly 50% of customers are still active (right-censored data), so simple averages severely underestimate customer lifetime by forcing open accounts to appear as if they churned today.</p>
+                <p>The Kaplan-Meier survival analysis technique resolves this by ordering every observed churn, calculating the conditional retention rate at that time, and multiplying those rates together to build a stepwise survival curve. Active customers contribute exposure time to the denominator but are not treated as failures, so the resulting curve reflects the true probability of a customer remaining live across the tenure horizon. Integrating under this curve delivers the restricted mean lifetime, while the point where the curve drops below 50% provides the Kaplan-Meier median tenure.</p>
+                <p>This non-parametric estimator is the scientific standard for lifetime calculations in biostatistics, actuarial science, and customer analytics because it incorporates every observed tenure, correctly handles right-censoring, and produces unbiased estimates without imposing distributional assumptions.</p>
             </div>
 
             <div class="card">
