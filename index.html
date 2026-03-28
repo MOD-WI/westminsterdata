@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Westminster Data Dashboards</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header img {
+            max-width: 180px;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            max-width: 1100px;
+            width: 100%;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .card h2 {
+            font-size: 1.2rem;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .card p {
+            color: #888;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .card .tag {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 4px 12px;
+            background: #e8f0fe;
+            color: #1967d2;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="westminster-logo.png" alt="Westminster Logo">
+        <h1>Westminster Data Dashboards</h1>
+        <p>Select a dashboard to view</p>
+    </div>
+    <div class="grid">
+        <a class="card" href="Consumer_Data_Report.html">
+            <h2>Consumer Data Report</h2>
+            <p>Business insurance practice analysis with consumer data breakdowns and insights.</p>
+            <span class="tag">Insurance Analysis</span>
+        </a>
+        <a class="card" href="customer-data-analysis-dashboard.html">
+            <h2>Customer Data Analysis Dashboard</h2>
+            <p>Comprehensive Westminster customer data analysis with interactive visualisations.</p>
+            <span class="tag">Customer Analysis</span>
+        </a>
+        <a class="card" href="datareport.html">
+            <h2>Data Report</h2>
+            <p>Westminster customer data analysis report with key metrics and findings.</p>
+            <span class="tag">Data Report</span>
+        </a>
+        <a class="card" href="insurance_analysis_website.html">
+            <h2>Insurance Analysis</h2>
+            <p>Westminster customer data analysis focused on insurance metrics.</p>
+            <span class="tag">Insurance</span>
+        </a>
+        <a class="card" href="visual_insurance_report.html">
+            <h2>Visual Insurance Report</h2>
+            <p>Business insurance practice analysis with visual charts and graphs.</p>
+            <span class="tag">Visual Report</span>
+        </a>
+    </div>
+</body>
+</html>
